@@ -1,7 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { AGE_COOKIE } from "@/lib/age-gate";
+import { updateSession } from "@/lib/supabase/proxy";
 
-export function proxy(request: NextRequest) {
+const PROTECTED_PREFIXES = ["/shop", "/account", "/admin", "/pending"];
+
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // 19+ age gate: every page requires the confirmation cookie.
@@ -12,7 +15,18 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  const { response, userId } = await updateSession(request);
+
+  // Optimistic check only. Pages re-check the user, company status and role on the server,
+  // and row-level security enforces access in the database.
+  if (!userId && PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = `?next=${encodeURIComponent(pathname + search)}`;
+    return NextResponse.redirect(url);
+  }
+
+  return response;
 }
 
 export const config = {
