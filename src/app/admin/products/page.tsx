@@ -49,7 +49,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
           <button type="submit" className="rounded-sm border border-forest px-3 py-1.5 text-sm">Search</button>
         </form>
       </div>
-      <div className="mt-6 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
+      <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="mt-6 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="border-b border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
             <tr>

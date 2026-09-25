@@ -40,7 +40,25 @@ Without `RESEND_API_KEY`, emails are printed to the server log.
 - Account reviews and status changes run through database functions that write the append-only `audit_log`.
 - All storage buckets are private; files are served through short-lived signed URLs.
 
+## Deploying
+
+1. **Supabase**: create a project in the **Canada (Central)** region. Then, from this folder:
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <your-project-ref>
+   npx supabase db push          # applies supabase/migrations
+   ```
+   In the dashboard: Authentication → turn on email confirmation; URL configuration → Site URL `https://<domain>`, redirect URL `https://<domain>/auth/confirm`.
+2. **Staff account**: put the production keys in `.env.local` temporarily and run
+   `npm run create-admin -- you@yourdomain.ca 'long-password' "Your Name"`. Do **not** run `npm run seed` in production.
+3. **Vercel**: import the GitHub repository, set the variables from `.env.example`
+   (`NEXT_PUBLIC_SITE_URL` = your domain) and deploy.
+4. **Resend**: verify your sending domain, then set `RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_NOTIFY_EMAIL`.
+5. In the admin, add real producers (with licence numbers), categories and products, each with lots and COAs.
+
 ## Production checklist
+
+See `COMPLIANCE.md` for the full compliance check.
 
 - Create the Supabase project in **Canada (Central)** for data residency.
 - Auth settings: enable email confirmation; set Site URL and redirect URL `https://<domain>/auth/confirm`.

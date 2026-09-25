@@ -55,7 +55,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps<"/admi
         <button type="submit" className="rounded-sm bg-forest px-4 py-2 font-medium text-fog">Apply</button>
         <Link href="/admin/orders" className="py-2 underline underline-offset-2">Clear</Link>
       </form>
-      <div className="mt-6 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
+      <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="mt-6 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="border-b border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
             <tr>

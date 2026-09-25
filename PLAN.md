@@ -120,4 +120,4 @@ Key rules:
 - [x] Step 3: catalogue management and buyer catalogue
 - [x] Step 4: cart, checkout, buyer orders
 - [x] Step 5: admin orders, dashboard, CSV export, audit log
-- [ ] Step 6: compliance check
+- [x] Step 6: compliance check (see COMPLIANCE.md)

@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
 
       <section aria-labelledby="lots-heading" className="mt-14">
         <h2 id="lots-heading" className="text-2xl">Lots and certificates of analysis</h2>
-        <div className="mt-4 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
+        <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="mt-4 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="border-b border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
               <tr>

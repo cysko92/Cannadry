@@ -49,7 +49,7 @@ export function OrderDetail({ order }: { order: OrderDetailData }) {
     <div className="space-y-8">
       <section aria-labelledby="lines-heading" className="rounded-sm border border-stone/60 bg-paper">
         <h2 id="lines-heading" className="px-5 pt-5 text-xl">Lines</h2>
-        <div className="overflow-x-auto">
+        <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="overflow-x-auto">
           <table className="mt-3 w-full min-w-[680px] text-left text-sm">
             <thead className="border-y border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
               <tr>

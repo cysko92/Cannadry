@@ -22,7 +22,7 @@ export default async function OrdersPage() {
       {!orders?.length ? (
         <p className="mt-8 rounded-sm border border-stone/60 bg-paper p-8 text-ink-muted">No orders yet.</p>
       ) : (
-        <div className="mt-8 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
+        <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="mt-8 overflow-x-auto rounded-sm border border-stone/60 bg-paper">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="border-b border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
               <tr>

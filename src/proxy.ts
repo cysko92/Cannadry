@@ -31,5 +31,5 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Skip Next internals and static files.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:svg|png|jpg|jpeg|webp|ico|woff2?)$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|icon.svg|.*\\.(?:svg|png|jpg|jpeg|webp|ico|woff2?)$).*)"],
 };

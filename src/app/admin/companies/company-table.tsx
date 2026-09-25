@@ -8,7 +8,7 @@ export function CompanyTable({ companies }: { companies: Tables<"companies">[] }
     return <p className="rounded-sm border border-stone/60 bg-paper p-8 text-ink-muted">Nothing here.</p>;
   }
   return (
-    <div className="overflow-x-auto rounded-sm border border-stone/60 bg-paper">
+    <div tabIndex={0} role="region" aria-label="Table, scrolls sideways" className="overflow-x-auto rounded-sm border border-stone/60 bg-paper">
       <table className="w-full min-w-[720px] text-left text-sm">
         <thead className="border-b border-stone/60 text-xs uppercase tracking-wider text-ink-muted">
           <tr>
