@@ -327,6 +327,13 @@ export type Database = {
             foreignKeyName: "order_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "catalogue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -460,6 +467,13 @@ export type Database = {
             foreignKeyName: "product_lots_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "catalogue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_lots_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -577,7 +591,50 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      catalogue: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          category_slug: string | null
+          cbd_max: number | null
+          cbd_min: number | null
+          created_at: string | null
+          description: string | null
+          format: string | null
+          id: string | null
+          lead_time_days: number | null
+          lot_count: number | null
+          min_order_units: number | null
+          name: string | null
+          price_per_unit_cents: number | null
+          producer_id: string | null
+          producer_licence: string | null
+          producer_name: string | null
+          size_label: string | null
+          status: Database["public"]["Enums"]["product_status"] | null
+          stock_units: number | null
+          thc_max: number | null
+          thc_min: number | null
+          units_per_case: number | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       create_access_request: {
@@ -600,6 +657,7 @@ export type Database = {
       current_company_id: { Args: never; Returns: string }
       is_active_buyer: { Args: never; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
+      place_order: { Args: { p_notes?: string }; Returns: string }
       review_company: {
         Args: {
           p_company_id: string
@@ -613,6 +671,18 @@ export type Database = {
           p_company_id: string
           p_note?: string
           p_status: Database["public"]["Enums"]["company_status"]
+        }
+        Returns: undefined
+      }
+      set_order_invoice: {
+        Args: { p_order_id: string; p_path: string }
+        Returns: undefined
+      }
+      set_order_status: {
+        Args: {
+          p_note?: string
+          p_order_id: string
+          p_status: Database["public"]["Enums"]["order_status"]
         }
         Returns: undefined
       }

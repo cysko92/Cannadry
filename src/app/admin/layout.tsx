@@ -12,8 +12,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         badge="Admin"
         userName={viewer.profile?.full_name ?? ""}
         nav={[
+          { href: "/admin", label: "Dashboard" },
+          { href: "/admin/orders", label: "Orders" },
+          { href: "/admin/products", label: "Products" },
+          { href: "/admin/producers", label: "Producers" },
+          { href: "/admin/categories", label: "Categories" },
           { href: "/admin/requests", label: "Access requests" },
           { href: "/admin/companies", label: "Companies" },
+          { href: "/admin/audit", label: "Audit log" },
           { href: "/shop", label: "Preview shop" },
         ]}
       />

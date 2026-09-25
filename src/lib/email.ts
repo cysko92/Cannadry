@@ -1,6 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
 import { env } from "@/lib/env";
+import { formatMoney } from "@/lib/format";
 
 type Email = { to: string | string[]; subject: string; text: string };
 
@@ -80,5 +81,44 @@ export const emails = {
       to,
       subject: "Your CannaDry account is active again",
       text: `Access for ${company} has been restored.\n\n${env.siteUrl()}/login` + signature,
+    }),
+
+  orderPlaced: (to: string, po: string, company: string, subtotalCents: number) =>
+    sendEmail({
+      to,
+      subject: `Purchase order ${po} submitted`,
+      text:
+        `We received purchase order ${po} from ${company.replace(/\.$/, "")}.\n\n` +
+        `Subtotal: ${formatMoney(subtotalCents)} (before taxes and excise).\n` +
+        `We will confirm the order shortly. You can follow its status in your account.\n\n${env.siteUrl()}/shop/orders` +
+        signature,
+    }),
+
+  adminNewOrder: (po: string, company: string, orderId: string) => {
+    const to = process.env.ADMIN_NOTIFY_EMAIL;
+    if (!to) return Promise.resolve();
+    return sendEmail({
+      to,
+      subject: `New purchase order ${po} from ${company}`,
+      text: `${env.siteUrl()}/admin/orders/${orderId}`,
+    });
+  },
+
+  orderStatus: (to: string | string[], po: string, status: string, note?: string | null) =>
+    sendEmail({
+      to,
+      subject: `Purchase order ${po}: ${status}`,
+      text:
+        `Purchase order ${po} is now ${status}.` +
+        (note ? `\n\nNote: ${note}` : "") +
+        `\n\n${env.siteUrl()}/shop/orders` +
+        signature,
+    }),
+
+  invoiceAvailable: (to: string | string[], po: string) =>
+    sendEmail({
+      to,
+      subject: `Invoice for purchase order ${po}`,
+      text: `The invoice for purchase order ${po} is available in your account.\n\n${env.siteUrl()}/shop/orders` + signature,
     }),
 };

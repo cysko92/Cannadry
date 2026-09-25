@@ -117,7 +117,7 @@ Key rules:
 
 - [x] Step 1: setup, design tokens, wordmark, 19+ age gate, public pages
 - [x] Step 2: logins, access requests, admin approval queue, emails
-- [ ] Step 3: catalogue management and buyer catalogue
-- [ ] Step 4: cart, checkout, buyer orders
-- [ ] Step 5: admin orders, dashboard, CSV export, audit log
+- [x] Step 3: catalogue management and buyer catalogue
+- [x] Step 4: cart, checkout, buyer orders
+- [x] Step 5: admin orders, dashboard, CSV export, audit log
 - [ ] Step 6: compliance check

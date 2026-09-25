@@ -11,12 +11,14 @@
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "create-admin": "tsx --env-file=.env.local scripts/create-admin.ts"
+    "create-admin": "tsx --env-file=.env.local scripts/create-admin.ts",
+    "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.1",
     "next": "16.3.6",
+    "pdf-lib": "^1.17.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "resend": "^6.29.0",

@@ -14,7 +14,7 @@ Requirements: Node 20+, Docker.
 npm install
 npm run db:start            # starts local Supabase and applies migrations
 cp .env.example .env.local  # fill in keys printed by `npx supabase status`
-npm run create-admin -- admin@example.com 'a-long-password' "Your Name"
+npm run seed                # fake test data (see accounts below)
 npm run dev
 ```
 
@@ -24,8 +24,11 @@ Useful scripts:
 |---|---|
 | `npm run db:reset` | Recreate the local database from `supabase/migrations` |
 | `npm run db:types` | Regenerate `src/lib/supabase/database.types.ts` after a schema change |
+| `npm run seed` | Load fake producers, products, lots with sample COAs, buyers and orders (local only) |
 | `npm run create-admin` | Create or promote a CannaDry staff account |
 | `npm run lint` / `npm run typecheck` | Checks |
+
+Test accounts after `npm run seed` (password `Test-pass-2026`): `admin@cannadry.example` (staff), `buyer@fogline.example` and `buyer@harbourview.example` (approved buyers), `buyer@kettlevalley.example` (pending).
 
 Without `RESEND_API_KEY`, emails are printed to the server log.
 

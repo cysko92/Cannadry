@@ -17,8 +17,10 @@ export default async function AccountLayout({ children }: { children: React.Reac
         nav={
           isAdmin
             ? [
+                { href: "/admin", label: "Dashboard" },
+                { href: "/admin/orders", label: "Orders" },
+                { href: "/admin/products", label: "Products" },
                 { href: "/admin/requests", label: "Access requests" },
-                { href: "/admin/companies", label: "Companies" },
               ]
             : [
                 { href: "/shop", label: "Catalogue" },

@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { AGE_COOKIE } from "@/lib/age-gate";
 import { updateSession } from "@/lib/supabase/proxy";
 
-const PROTECTED_PREFIXES = ["/shop", "/account", "/admin", "/pending"];
+const PROTECTED_PREFIXES = ["/shop", "/account", "/admin", "/pending", "/documents"];
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
