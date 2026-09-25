@@ -1,122 +1,114 @@
-# CannaDry — Phase 1 Plan
+# CannaDry — Phase 1 Plan (v2)
 
-Status: **draft, waiting for approval**. Nothing is built yet.
+Status: **revised after client answers, waiting for approval**. Nothing is built yet.
+
+## 0. What changed from v1
+
+Client answers:
+1. Buyers are licensed suppliers: federal licence holders such as producers and processors. BC retailers are **not** buyers.
+2. Business model: CannaDry is a **wholesale shop**. There is no commission and no subscription.
+3. CannaDry sells **all** products itself. Suppliers have no accounts, and CannaDry controls every listing.
+
+So CannaDry is a **single-seller wholesale shop**, not a marketplace:
+- There is no supplier area and no supplier logins.
+- CannaDry staff (admin) create and edit every product, lot, price, stock level and COA.
+- Checkout produces **one order** to CannaDry, so orders are no longer split by vendor.
+- Producers become **reference records** managed by admin. Each product still shows its licence holder, because the compliance rules require it.
 
 ## 1. Stack
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
-- Supabase: Postgres, Auth (email + password, magic link optional), Storage. Project region: `ca-central-1` (Montreal).
-- Row-level security (RLS) on every table. Access checks happen in the database, not only in the UI.
-- Hosting: Vercel (function region `yul1` / closest to Canada). Email: Resend.
-- Fonts: Fraunces (headings), Inter (UI and data), self-hosted via `next/font`.
-- Seed script with fake producers, retailers and products (no real brand names).
+- Supabase in `ca-central-1` (Montreal): Postgres, logins, file storage, and row-level security (RLS) on every table
+- Vercel hosting and Resend for email
+- Fraunces for headings and Inter for UI and data
+- Seed script with fake producers, buyers and products. No real brand names.
 
 ## 2. User roles
 
-A **user** belongs to one **company**. The company has a type and a status.
-
 | Role | Who | Can do |
 |---|---|---|
-| Visitor | Not logged in | Public pages, request access. No products, no prices. |
-| Pending | Signed up, not yet approved | See "your request is under review". Nothing else. |
-| Buyer | User of an approved buyer company | Catalogue, product pages, producer profiles, cart, own company's orders. |
-| Supplier | User of an approved supplier company | Own products, stock, COAs, incoming POs, dashboard. Also sees catalogue (read-only) if also a buyer. |
-| Admin | CannaDry staff | Approve/reject/suspend companies, categories, all orders, CSV export, audit log. |
+| Visitor | Not logged in | Public pages and the access request. Never products or prices. |
+| Pending | Signed up, not yet approved | Sees only "your request is under review". |
+| Buyer | User of an approved licence-holder company | Catalogue, product pages, cart, and their own company's orders and invoices |
+| Admin | CannaDry staff | Everything below: accounts, catalogue, orders, exports, audit log |
 
-A company can be both supplier and buyer (e.g. a processor buying bulk flower). Within a company, users are `owner` or `member` (owner can invite colleagues — small, useful, cheap to add).
-
-Suspended companies lose access immediately (enforced in RLS, not just by hiding links).
+A buyer company can have several users. The first user is the `owner` and can invite colleagues. Suspending a company cuts its access in the database right away.
 
 ## 3. Pages
 
-### Public (19+ age gate on first visit, stored in a cookie)
-| Route | Content |
-|---|---|
-| `/` | One-line value statement, "For suppliers", "For buyers", Request access |
-| `/how-it-works` | 3–4 steps per side |
-| `/about` | Company, BC roots, compliance commitment |
-| `/request-access` | Company legal name, licence type, licence number, province, contact, email, phone, licence document upload, password |
-| `/contact`, `/privacy`, `/terms` | Static pages (privacy written for PIPA/PIPEDA, Canadian storage) |
-| `/login`, `/reset-password` | Auth |
+### Public (19+ age gate)
+`/`, `/how-it-works` (steps for buyers), `/about`, `/request-access`, `/contact`, `/privacy`, `/terms`, `/login`, `/reset-password`
 
-### Buyer (`/app/...`)
-| Route | Content |
-|---|---|
-| `/app/catalogue` | Grid/list, filters: category, THC %, CBD %, format/size, producer, price/unit, minimum order, in stock |
-| `/app/products/[id]` | Specs, case size, lot/batch, harvest or packaging date, terpenes, COA download, MOQ, lead time, licence holder |
-| `/app/producers/[id]` | Profile, location, licence number, their products |
-| `/app/cart` | Multi-vendor cart, grouped by supplier, MOQ checks, submit → one PO per supplier |
-| `/app/orders`, `/app/orders/[id]` | Status timeline, PO/invoice PDF, re-order |
+The access request collects: company legal name, licence type (cultivation, processing, and so on), Health Canada licence number, province, contact person, email, phone and the licence document.
 
-### Supplier (`/supplier/...`)
+### Buyer (`/shop/...`)
 | Route | Content |
 |---|---|
-| `/supplier` | Dashboard: orders this month, top products, low-stock alerts |
-| `/supplier/products`, `/new`, `/[id]` | Create/edit products, lots, COA upload, price, stock, publish/unpublish |
-| `/supplier/orders`, `/[id]` | Incoming POs: accept, reject (with reason), mark shipped, mark delivered |
-| `/supplier/profile` | Public producer profile |
+| `/shop` | Catalogue. Filters: category, THC %, CBD %, format/size, producer, price per unit, minimum order, in stock |
+| `/shop/products/[id]` | Specs, case size, lot/batch, harvest or packaging date, terpenes, COA download, minimum order, lead time, licence holder |
+| `/shop/producers/[id]` | Producer info written by CannaDry: location, licence number, their products |
+| `/shop/cart` | Single cart and one order to CannaDry, with minimum-order and stock checks |
+| `/shop/orders`, `/[id]` | Status (submitted → accepted → shipped → delivered), PO and invoice PDFs, re-order |
+| `/account` | Profile and company users |
 
 ### Admin (`/admin/...`)
 | Route | Content |
 |---|---|
-| `/admin/requests` | Pending companies, licence document viewer, approve/reject with note |
-| `/admin/companies` | All companies, suspend/reactivate |
+| `/admin` | Dashboard: orders this month, top products, low-stock alerts, pending requests |
+| `/admin/requests` | Access requests with licence document viewer; approve or reject with a note |
+| `/admin/companies` | Buyer companies; suspend or reactivate |
+| `/admin/producers` | Producer records (name, licence number, location, description) |
+| `/admin/products`, `/new`, `/[id]` | Create and edit products, lots, COAs, prices and stock; publish or unpublish |
 | `/admin/categories` | Edit categories |
-| `/admin/orders` | All orders, filters, CSV export |
-| `/admin/audit` | Audit log (who, what, when) |
-
-Shared: `/account` (user profile, company users).
+| `/admin/orders`, `/[id]` | Accept or reject (with reason), mark shipped or delivered, upload invoice; CSV export |
+| `/admin/audit` | Audit log: who, what and when |
 
 ## 4. Database tables
 
 ```
-companies          id, legal_name, trade_name, kind (supplier|buyer|both), licence_type,
-                   licence_number, province, address, status (pending|approved|rejected|suspended),
-                   approved_by, approved_at, created_at
-licence_documents  id, company_id, storage_path, uploaded_at             -- private bucket
-profiles           id (= auth.users.id), company_id, full_name, phone, company_role (owner|member),
-                   is_admin, created_at
+companies          id, legal_name, licence_type, licence_number, province, address,
+                   status (pending|approved|rejected|suspended), approved_by, approved_at, created_at
+licence_documents  id, company_id, storage_path, uploaded_at          -- private bucket
+profiles           id (= auth user), company_id (null for staff), full_name, phone,
+                   company_role (owner|member), is_admin, created_at
+producers          id, name, licence_number, city, province, description, active
 categories         id, name, slug, sort_order, active
-products           id, supplier_id, category_id, name, description (facts only), format, size,
+products           id, producer_id, category_id, name, description (facts only), format, size,
                    units_per_case, price_per_unit_cents, min_order_units, lead_time_days,
                    status (draft|published|archived), created_at, updated_at
 product_lots       id, product_id, lot_number, harvest_date, packaging_date, thc_pct, cbd_pct,
-                   terpenes (jsonb: [{name, pct}]), coa_path, stock_units, created_at
-                   -- a product can only be published if it has a lot with a COA
-cart_items         id, buyer_company_id, user_id, lot_id, quantity_units
-orders             id, po_number, buyer_company_id, supplier_company_id, placed_by,
-                   status (submitted|accepted|rejected|shipped|delivered|cancelled),
-                   subtotal_cents, notes, created_at
-order_items        id, order_id, product_id, lot_id, snapshot (name, lot, price, THC/CBD),
-                   quantity_units, unit_price_cents, line_total_cents
+                   terpenes (jsonb), coa_path, stock_units, created_at
+cart_items         id, company_id, user_id, lot_id, quantity_units
+orders             id, po_number, company_id, placed_by, status
+                   (submitted|accepted|rejected|shipped|delivered|cancelled),
+                   subtotal_cents, notes, invoice_path, created_at
+order_items        id, order_id, product_id, lot_id, snapshot (jsonb), quantity_units,
+                   unit_price_cents, line_total_cents
 order_events       id, order_id, from_status, to_status, actor_id, note, created_at
-audit_log          id, actor_id, actor_name, company_id, action, entity, entity_id, data (jsonb), created_at
+audit_log          id, actor_id, actor_name, company_id, action, entity, entity_id, data, created_at
 ```
 
 Key rules:
-- `orders` and `order_items` store a snapshot of price and lot data, so records stay accurate when products change.
-- Status changes go through a database function that checks who may do what (e.g. only the supplier accepts; only from `submitted`) and writes `order_events` + `audit_log` in the same transaction.
-- Cart checkout is one database function: validates MOQ and stock, splits by supplier, creates one order per supplier, reserves stock, clears the cart.
-- Storage buckets: `licences` (admin + owning company only), `coas` (approved companies only), `images` (approved companies only). No public buckets for product content.
-- Audit log is append-only (no update/delete policy for anyone).
+- Buyers can read only published products, their own company's cart and orders, and COAs. Only admins can write to the catalogue.
+- A product can't be published unless it has a lot with a COA and a producer with a licence number.
+- Checkout runs as one database step: it checks minimums and stock, creates the order, reserves the stock and clears the cart.
+- Each order stores a copy of the price and lot details, so records stay accurate when products change.
+- Every status change is written to `order_events` and `audit_log`. The audit log can only be added to, never edited or deleted.
+- Storage: `licences` (admin and the owning company only), `coas` and `images` (approved companies only). No public buckets.
 
 ## 5. Build order
 
-1. Project setup, design tokens, layout, wordmark, age gate, public pages.
-2. Auth + request-access flow + admin approval queue + emails (request received, approved, rejected).
-3. Catalogue, filters, product page, producer profile (seed data).
-4. Cart, checkout split into POs, buyer orders, re-order, PO PDF.
-5. Supplier area: products/lots/COAs, incoming orders, dashboard.
-6. Admin: companies, categories, all orders, CSV export, audit log.
-7. Compliance pass (section 5 of the brief), page by page, plus accessibility check (axe + keyboard).
+1. Setup, design tokens, wordmark, age gate, public pages
+2. Logins, access requests, admin approval queue, emails
+3. Admin catalogue management (producers, products, lots, COAs), then the buyer catalogue and product pages
+4. Cart, checkout, buyer orders, re-order, PO PDF
+5. Admin orders, invoice upload, dashboard, CSV export, audit log
+6. Compliance check, page by page, including accessibility
 
-After each step: short list of what was built and what is left.
+## 6. Still open (default used if not answered)
 
-## 6. Open questions (defaults I will use if you don't specify)
-
-1. **Buyer types** — default: **both** (federal licence holders and BC retailers under Direct Delivery), modelled with `licence_type`. The data model supports both either way; the difference is licence types allowed at sign-up and legal copy.
-2. **Business model** — default: **free during launch**. No billing code in Phase 1; a commission field can be added later.
-3. **French version** — default: **English only**, but all UI text goes through a translation file so French can be added without rewrites.
-4. **Seed-to-sale / ERP** — default: none in Phase 1. Product/lot fields are kept close to common seed-to-sale exports so a later import is simple.
-5. **Invoices** — Phase 1 has no payment. Default: generate a **PO PDF** per order; the "invoice" is uploaded by the supplier as a PDF on the order. Confirm this is acceptable.
-6. **Supabase / Vercel accounts** — I will build against a local Supabase (migrations in the repo). You or the client will need to create the hosted projects (Canada region) and provide keys for deployment.
+1. **Producer shown on products?** Default: **yes**. "Produced by [licence holder], licence #…" appears on each product, as the compliance list requires. Producers have no logins.
+2. **French version**: default English only, with all text in one translation file so French can be added later.
+3. **Invoices**: default is an automatic PO PDF per order, and CannaDry uploads its own invoice PDF to the order.
+4. **ERP / seed-to-sale**: none in Phase 1.
+5. **CannaDry's own licence**: selling to licence holders requires CannaDry (or its operating entity) to hold the right Health Canada licence. The licence number goes in the site footer and on POs. Please provide it, or I'll use a placeholder.
