@@ -1,6 +1,6 @@
 # CannaDry — Phase 1 Plan (v2)
 
-Status: **revised after client answers, waiting for approval**. Nothing is built yet.
+Status: **approved**. Build progress is tracked in section 7.
 
 ## 0. What changed from v1
 
@@ -105,10 +105,19 @@ Key rules:
 5. Admin orders, invoice upload, dashboard, CSV export, audit log
 6. Compliance check, page by page, including accessibility
 
-## 6. Still open (default used if not answered)
+## 6. Decisions
 
-1. **Producer shown on products?** Default: **yes**. "Produced by [licence holder], licence #…" appears on each product, as the compliance list requires. Producers have no logins.
-2. **French version**: default English only, with all text in one translation file so French can be added later.
-3. **Invoices**: default is an automatic PO PDF per order, and CannaDry uploads its own invoice PDF to the order.
-4. **ERP / seed-to-sale**: none in Phase 1.
-5. **CannaDry's own licence**: selling to licence holders requires CannaDry (or its operating entity) to hold the right Health Canada licence. The licence number goes in the site footer and on POs. Please provide it, or I'll use a placeholder.
+1. **Producer on products**: shown ("Produced by …, licence #…"). Placeholder value `X` for now.
+2. **Language**: English only.
+3. **Invoices**: automatic PO PDF per order, and CannaDry uploads its invoice PDF to the order.
+4. **ERP / seed-to-sale**: later.
+5. **CannaDry licence number**: placeholder `X` in `src/lib/site.ts`.
+
+## 7. Progress
+
+- [x] Step 1: setup, design tokens, wordmark, 19+ age gate, public pages
+- [ ] Step 2: logins, access requests, admin approval queue, emails
+- [ ] Step 3: catalogue management and buyer catalogue
+- [ ] Step 4: cart, checkout, buyer orders
+- [ ] Step 5: admin orders, dashboard, CSV export, audit log
+- [ ] Step 6: compliance check
